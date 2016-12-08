@@ -1,57 +1,47 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Text;
 
 namespace CalculationMazeSolver
 {
     class Solver
     {
-        //static string[] InputLines =
-        //{
-        //    "2 +2 -1",
-        //    "-1 *3 +1",
-        //    "+1 +4 +1"
-        //};
-
-        //const int InputTarget = 6;
-
-        static string[] InputLines =
+        public static string SolveFile(string path)
         {
-            "0 +1 *3 +2 -2",
-            "+1 *4 *2 -2 -2",
-            "*2 +2 -2 +2 *2",
-            "+2 -2 *2 *4 +1",
-            "+0 +2 *3 +3 +1"
-        };
+            StringBuilder output = new StringBuilder();
 
-        const int InputTarget = 21;
+            string[] fileContent = File.ReadAllLines(path);
 
-        const int MaxSteps = 30;
+            if (fileContent.Length < 2)
+            {
+                throw new InvalidOperationException("Invalid input.");
+            }
 
-        static void Main(string[] args)
-        {
-            string[][] maze = InputLines.Select(l => l.Split(' ')).ToArray();
+            int inputTarget = Int32.Parse(fileContent[0]);
 
-            List<Path> solutions = Solve(maze, InputTarget);
+            string[][] maze = fileContent.Skip(1).Select(l => l.Split(' ')).ToArray();
+
+            List<Path> solutions = Solve(maze, inputTarget);
 
             if (solutions != null)
             {
-                Console.WriteLine(solutions[0].Points.Count);
-                //Console.WriteLine(String.Join(";", solution.Points.Select(p => p.ToString())));
-                //Console.WriteLine(String.Concat(solution.Points.Select(p => maze[p.Y][p.X])) + "=" + solution.Value);
+                output.AppendLine(solutions[0].Points.Count.ToString());
 
                 // Format used by the site
                 foreach (Path solution in solutions)
                 {
-                    Console.WriteLine(String.Join(" ", solution.Points.Select(p => p.X + 1 + (maze.Length * p.Y))));
+                    //Console.WriteLine(String.Concat(solution.Points.Select(p => maze[p.Y][p.X])) + "=" + solution.Value);
+                    output.AppendLine(String.Join(" ", solution.Points.Select(p => p.X + 1 + (maze.Length * p.Y))));
                 }
             }
             else
             {
-                Console.WriteLine("No solution found.");
+                output.AppendLine("No solution found.");
             }
 
-            Console.Read();
+            return output.ToString();
         }
 
         private static List<Path> Solve(string[][] maze, int target)
@@ -66,7 +56,7 @@ namespace CalculationMazeSolver
             // What have we already done? Used to prune.
             HashSet<Tuple<Point, int>> pointsSoFar = new HashSet<Tuple<Point, int>>();
 
-            for (int numSteps = 1; numSteps < MaxSteps; ++numSteps)
+            for (int numSteps = 1; numSteps < 17; ++numSteps)
             {
                 IEnumerable<Path> solutions = currentDepth.Where(p => p.Points.Last().X == maze[0].Length - 1 && p.Points.Last().Y == maze.Length - 1 && p.Value == target);
 
@@ -80,6 +70,7 @@ namespace CalculationMazeSolver
 
                 foreach (Path path in previousDepth)
                 {
+                    // TODO remove
                     Point current = path.Points.Last();
 
                     AddIfInBounds(maze, currentDepth, pointsSoFar, path, current.X - 1, current.Y);
@@ -90,6 +81,11 @@ namespace CalculationMazeSolver
 
                 foreach(Path path in currentDepth)
                 {
+                    if (path.Points.Last().X == maze[0].Length - 1 && path.Points.Last().Y == maze.Length - 1 && numSteps == 16 && path.Value >= 0 && path.Value < 1000)
+                    {
+                        Console.WriteLine("Unique value: " + path.Value);
+                    }
+
                     pointsSoFar.Add(new Tuple<Point, int>(path.Points.Last(), path.Value));
                 }
             }
@@ -121,17 +117,5 @@ namespace CalculationMazeSolver
                 }
             }
         }
-
-        //public bool Recurse(string[][] maze, int currentNum, List<Point> resultPath)
-        //{
-        //    Point currentPoint = resultPath.Last();
-
-        //    if (currentPoint.Y == maze.Length && currentPoint.X == maze[0].Length && currentNum == inputTarget)
-        //    {
-        //        return true;
-        //    }
-
-        //    if (currentPoint.X)
-        //}
     }
 }
