@@ -6,34 +6,22 @@
 
 namespace CalcMazeTest
 {
+    using CalcMaze;
+
     using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-    class MapTest
+    [TestClass]
+    public class MapTest
     {
         #region Public Methods and Operators
 
         [TestMethod]
-        public void TestMap()
+        public void GridCanBeCreated()
         {
-            var foo = new Map { Grid = new Location[1, 1] };
-            foo.Grid[0, 0] = new Location() { CalcType = CalcType.Plus };
+            var grid = new Location[1, 1];
+            grid[0, 0] = new Location { CalcType = CalcType.Plus, CalcValue = 7 };
         }
 
         #endregion
-    }
-
-    public enum CalcType
-    {
-        Plus
-    }
-
-    public class Location
-    {
-        public CalcType CalcType { get; set; }
-    }
-
-    public class Map
-    {
-        public Location[,] Grid { get; set; }
     }
 }
