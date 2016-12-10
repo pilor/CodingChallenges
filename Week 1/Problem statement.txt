@@ -1,0 +1,18 @@
+The stated problem is to solve a calculation maze, as explained in detail here (http://www.mazelog.com/show?15).
+
+Given an input maze, and the target number required to exit, determine the path through the maze
+starting at the top left and ending at the bottom right, in the shortest number of steps. 
+
+Input format:
+* The first line of input is an integer T, the target number to reach.
+* The next N lines are individual rows of the maze, representing cells separated by spaces.
+* The first cell (top left) is an integer. Subsequent cells are a mathematical operator (+, -, *) followed by an integer.
+
+Output format:
+* The first line of the output is the length in steps of the optimal solution. The starting cell counts as the first step.
+* The next line of the output is the solution, formatted as described on the link above.
+  * Each cell of the grid can be numbered, starting with 1 in the top left, left to right then top to bottom.
+  * The solution is a space-separated list of numbered cells visited. The first number is 1, and the last is the number in the bottom right.
+* (Optional) If there are multiple valid solutions, they are listed on subsequent lines, sorted alphabetically.
+
+Valid input and output test cases are listed under the "Tests" directory.
