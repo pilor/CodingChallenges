@@ -1,5 +1,7 @@
 ﻿namespace CalcMazeTest
 {
+    using CalcMaze;
+
     using FluentAssertions;
 
     using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -21,14 +23,5 @@
             var node = new Node();
             node.CurrentCalc.Should().Be(0);
         }
-    }
-
-    public class Node
-    {
-        public int x = -1;
-
-        public int y = -1;
-
-        public double CurrentCalc { get; set; }
     }
 }

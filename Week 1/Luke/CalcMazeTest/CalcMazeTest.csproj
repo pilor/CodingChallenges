@@ -60,12 +60,19 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
-    <Compile Include="MapTest.cs" />
+    <Compile Include="GridTest.cs" />
+    <Compile Include="InputTest.cs" />
     <Compile Include="NodeTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\CalcMaze\CalcMaze.csproj">
+      <Project>{523AB3FB-CE64-4EBB-9DF0-78F574AC9C7A}</Project>
+      <Name>CalcMaze</Name>
+    </ProjectReference>
   </ItemGroup>
   <Choose>
     <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">

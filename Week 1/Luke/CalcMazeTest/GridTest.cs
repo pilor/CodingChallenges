@@ -1,17 +1,11 @@
-﻿// // ---------------------------------------------------------------------------
-// // <copyright file="MapTest.cs" company="Microsoft">
-// //     Copyright (c) Microsoft Corporation.  All rights reserved.
-// // </copyright>
-// // ---------------------------------------------------------------------------
-
-namespace CalcMazeTest
+﻿namespace CalcMazeTest
 {
     using CalcMaze;
 
     using Microsoft.VisualStudio.TestTools.UnitTesting;
 
     [TestClass]
-    public class MapTest
+    public class GridTest
     {
         #region Public Methods and Operators
 

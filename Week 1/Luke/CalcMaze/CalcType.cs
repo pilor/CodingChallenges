@@ -5,5 +5,8 @@ namespace CalcMaze
         Plus,
         Minus,
 
+        None,
+
+        Mult
     }
 }
