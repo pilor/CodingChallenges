@@ -1,0 +1,28 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 14
+VisualStudioVersion = 14.0.25420.1
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CalcMaze", "CalcMaze.csproj", "{523AB3FB-CE64-4EBB-9DF0-78F574AC9C7A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CalcMazeTest", "..\CalcMazeTest\CalcMazeTest.csproj", "{CD8FC5DE-7B55-49AB-9909-89931DBD44A6}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{523AB3FB-CE64-4EBB-9DF0-78F574AC9C7A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{523AB3FB-CE64-4EBB-9DF0-78F574AC9C7A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{523AB3FB-CE64-4EBB-9DF0-78F574AC9C7A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{523AB3FB-CE64-4EBB-9DF0-78F574AC9C7A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CD8FC5DE-7B55-49AB-9909-89931DBD44A6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CD8FC5DE-7B55-49AB-9909-89931DBD44A6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CD8FC5DE-7B55-49AB-9909-89931DBD44A6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CD8FC5DE-7B55-49AB-9909-89931DBD44A6}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
