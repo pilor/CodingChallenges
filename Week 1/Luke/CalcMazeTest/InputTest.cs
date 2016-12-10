@@ -18,9 +18,9 @@
 2 +2 -3
 -1 *3 +3
 +1 +4 +1";
-            var parser = new InputParser();
-            List<List<Location>> map = parser.Parse(input);
-            parser.Goal.Should().Be(6);
+            Puzzle puzzle = InputParser.Parse(input);
+            var map = puzzle.Map;
+            puzzle.Goal.Should().Be(6);
             map[0][0].CalcValue.Should().Be(2);
             map[0][1].CalcValue.Should().Be(2);
             map[0][1].CalcType.Should().Be(CalcType.Plus);

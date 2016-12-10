@@ -7,15 +7,11 @@
     [TestClass]
     public class GridTest
     {
-        #region Public Methods and Operators
-
         [TestMethod]
         public void GridCanBeCreated()
         {
             var grid = new Location[1, 1];
-            grid[0, 0] = new Location { CalcType = CalcType.Plus, CalcValue = 7 };
+            grid[0, 0] = new Location(0, 0) { CalcType = CalcType.Plus, CalcValue = 7 };
         }
-
-        #endregion
     }
 }

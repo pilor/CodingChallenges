@@ -1,15 +1,19 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace CalcMaze
+﻿namespace CalcMaze
 {
-    class Program
+    using System.IO;
+
+    internal class Program
     {
-        static void Main(string[] args)
+        private static void Main(string[] args)
         {
+            var prog = new Program();
+            prog.Run(@"D:\Git\CodingChallenges\Week 1\Tests\Input1.txt");
+        }
+
+        private void Run(string inputPath)
+        {
+            string allText = File.ReadAllText(inputPath);
+            var puzzle = InputParser.Parse(allText);
         }
     }
 }
