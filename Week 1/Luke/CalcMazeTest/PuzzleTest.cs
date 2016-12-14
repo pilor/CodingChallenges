@@ -91,5 +91,34 @@
             puzzle.LocationsToTry.Dequeue().Should().Be(puzzle.Map[1][0]);
             puzzle.LocationsToTry.Count.Should().Be(0);
         }
+
+        [TestMethod]
+        public void AddNeighbors21()
+        {
+            string input = @"6
+2 +2 -3
+-1 *3 +3
++1 +4 +1";
+            Puzzle puzzle = InputParser.Parse(input);
+            puzzle.AddNeighbors(2, 1);
+            puzzle.LocationsToTry.Dequeue().Should().Be(puzzle.Map[2][2]);
+            puzzle.LocationsToTry.Dequeue().Should().Be(puzzle.Map[1][1]);
+            puzzle.LocationsToTry.Dequeue().Should().Be(puzzle.Map[2][0]);
+            puzzle.LocationsToTry.Count.Should().Be(0);
+        }
+
+        [TestMethod]
+        public void AddNeighbors22()
+        {
+            string input = @"6
+2 +2 -3
+-1 *3 +3
++1 +4 +1";
+            Puzzle puzzle = InputParser.Parse(input);
+            puzzle.AddNeighbors(2, 2);
+            puzzle.LocationsToTry.Dequeue().Should().Be(puzzle.Map[1][2]);
+            puzzle.LocationsToTry.Dequeue().Should().Be(puzzle.Map[2][1]);
+            puzzle.LocationsToTry.Count.Should().Be(0);
+        }
     }
 }

@@ -13,8 +13,8 @@
         public string Solve()
         {
             // Assuming that we always start at 0,0 and end at bottom right
-            this.AddNeighbors(0, 0);
-
+            this.LocationsToTry.Enqueue(Map[0][0]);
+            var root = new Node { CurrentCalc = Map[0][0].CalcValue, Location = Map[0][0] };
             return null;
         }
 
