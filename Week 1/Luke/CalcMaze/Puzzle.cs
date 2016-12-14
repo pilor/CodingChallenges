@@ -1,9 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace CalcMaze
 {
-    using System.Collections.Generic;
-
     public class Puzzle
     {
         public Queue<Node> LocationsToTry = new Queue<Node>();
@@ -15,29 +14,37 @@ namespace CalcMaze
         public string Solve()
         {
             // Assuming that we always start at 0,0 and end at bottom right
-            var root = new Node { CurrentCalc = Map[0][0].CalcValue, Location = Map[0][0], Path = "0,0" };
-            this.LocationsToTry.Enqueue(root);
-            while (this.LocationsToTry.Peek() != null)
+            var root = new Node
             {
-                var currentLocation = this.LocationsToTry.Dequeue();
-                var neighbors = GetValidNeighbors(currentLocation.Location.X, currentLocation.Location.Y);
+                CurrentCalc = Map[0][0].CalcValue,
+                Location = Map[0][0],
+                Path = TranslateLocation(Map[0][0]).ToString()
+            };
+            LocationsToTry.Enqueue(root);
+            while (LocationsToTry.Peek() != null)
+            {
+                var currentNode = LocationsToTry.Dequeue();
+                var neighbors = GetValidNeighbors(currentNode.Location.Row, currentNode.Location.Col);
                 foreach (var neighbor in neighbors)
                 {
-                    double nextCalc = DoCalc(currentLocation.CurrentCalc, neighbor);
-                    string nextLocation = currentLocation.Path + " " + neighbor.X + "," + neighbor.Y;
-                    if (nextCalc == this.Goal && neighbor.X == Map[0].Count - 1 && neighbor.Y == Map.Count - 1)
+                    var nextCalc = DoCalc(currentNode.CurrentCalc, neighbor);
+                    var nextLocation = currentNode.Path + " " + TranslateLocation(neighbor);
+                    if (nextCalc == Goal && neighbor.Row == Map.Count - 1 && neighbor.Col == Map[0].Count - 1)
                     {
                         return nextLocation;
                     }
-                    else
-                    {
-                        this.LocationsToTry.Enqueue(new Node() { CurrentCalc = nextCalc, Location = neighbor, Path = nextLocation });
-                    }
+
+                    LocationsToTry.Enqueue(new Node {CurrentCalc = nextCalc, Location = neighbor, Path = nextLocation});
                 }
             }
 
 
             return null;
+        }
+
+        private int TranslateLocation(Location neighbor)
+        {
+            return neighbor.Col*Map[0].Count + neighbor.Row + 1;
         }
 
         private double DoCalc(double next, Location neighbor)
@@ -49,33 +56,33 @@ namespace CalcMaze
                 case CalcType.Plus:
                     return next + neighbor.CalcValue;
                 case CalcType.Mult:
-                    return next * neighbor.CalcValue;
+                    return next*neighbor.CalcValue;
                 default:
                     throw new ApplicationException("No calc type WTF");
             }
         }
 
-        public List<Location> GetValidNeighbors(int x, int y)
+        public List<Location> GetValidNeighbors(int row, int col)
         {
             var locs = new List<Location>();
-            if (this.isValid(x + 1, y))
+            if (isValid(row + 1, col))
             {
-                locs.Add(Map[x + 1][y]);
+                locs.Add(Map[row + 1][col]);
             }
 
-            if (this.isValid(x, y + 1))
+            if (isValid(row, col + 1))
             {
-                locs.Add(Map[x][y + 1]);
+                locs.Add(Map[row][col + 1]);
             }
 
-            if (this.isValid(x - 1, y))
+            if (isValid(row - 1, col))
             {
-                locs.Add(Map[x - 1][y]);
+                locs.Add(Map[row - 1][col]);
             }
 
-            if (this.isValid(x, y - 1))
+            if (isValid(row, col - 1))
             {
-                locs.Add(Map[x][y - 1]);
+                locs.Add(Map[row][col - 1]);
             }
 
             return locs;
@@ -83,7 +90,7 @@ namespace CalcMaze
 
         private bool isValid(int x, int y)
         {
-            return (x >= 0) && (y >= 0) && (y < this.Map.Count) && (x < this.Map[y].Count) && !((x == 0) && (y == 0));
+            return (x >= 0) && (y >= 0) && (y < Map.Count) && (x < Map[y].Count) && !((x == 0) && (y == 0));
         }
     }
 }

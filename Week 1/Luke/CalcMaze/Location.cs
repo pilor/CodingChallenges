@@ -2,15 +2,15 @@ namespace CalcMaze
 {
     public class Location
     {
-        public Location(int x, int y)
+        public Location(int row, int col)
         {
-            this.X = x;
-            this.Y = y;
+            this.Row = row;
+            this.Col = col;
         }
 
-        public int X { get; }
+        public int Row { get; }
 
-        public int Y { get; }
+        public int Col { get; }
 
         public CalcType CalcType { get; set; }
 

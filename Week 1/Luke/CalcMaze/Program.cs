@@ -9,10 +9,10 @@ namespace CalcMaze
         private static void Main(string[] args)
         {
             var prog = new Program();
-            string path = @"D:\Git\CodingChallenges\Week 1\Tests\Input0.txt";
+            string path = @"D:\Git\CodingChallenges\Week 1\Tests\Input1.txt";
             if (!File.Exists(path))
             {
-                path = @"C:\Git\CodingChallenges\Week 1\Tests\Input0.txt";
+                path = @"C:\Git\CodingChallenges\Week 1\Tests\Input1.txt";
             }
             prog.Run(path);
         }
