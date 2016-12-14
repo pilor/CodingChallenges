@@ -24,13 +24,14 @@ namespace CalcMaze
                 foreach (var neighbor in neighbors)
                 {
                     double nextCalc = DoCalc(next.CurrentCalc, neighbor);
+                    string nextLocation = next.Path + " " + neighbor.X + "," + neighbor.Y;
                     if (nextCalc == this.Goal && neighbor.X == Map[0].Count && neighbor.Y == Map.Count)
                     {
-                        return next.Path + " neighborLocation";
+                        return nextLocation;
                     }
                     else
                     {
-                        this.LocationsToTry.Enqueue(new Node() { CurrentCalc = nextCalc, Location = neighbor, Path = next.Path + " " + neighbor.X + "," + neighbor.Y });
+                        this.LocationsToTry.Enqueue(new Node() { CurrentCalc = nextCalc, Location = neighbor, Path = nextLocation });
                     }
                 }
             }
