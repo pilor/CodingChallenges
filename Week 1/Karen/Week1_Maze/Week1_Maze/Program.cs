@@ -17,7 +17,7 @@ namespace Week1_Maze
 
             // figure out how many numbers the line has
             // save such number for maze size. 
-            int mazeSize;
+            int theMazeSize;
 
 
         }
