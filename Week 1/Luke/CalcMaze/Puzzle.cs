@@ -19,13 +19,13 @@ namespace CalcMaze
             this.LocationsToTry.Enqueue(root);
             while (this.LocationsToTry.Peek() != null)
             {
-                var next = this.LocationsToTry.Dequeue();
-                var neighbors = GetValidNeighbors(next.Location.X, next.Location.Y);
+                var currentLocation = this.LocationsToTry.Dequeue();
+                var neighbors = GetValidNeighbors(currentLocation.Location.X, currentLocation.Location.Y);
                 foreach (var neighbor in neighbors)
                 {
-                    double nextCalc = DoCalc(next.CurrentCalc, neighbor);
-                    string nextLocation = next.Path + " " + neighbor.X + "," + neighbor.Y;
-                    if (nextCalc == this.Goal && neighbor.X == Map[0].Count && neighbor.Y == Map.Count)
+                    double nextCalc = DoCalc(currentLocation.CurrentCalc, neighbor);
+                    string nextLocation = currentLocation.Path + " " + neighbor.X + "," + neighbor.Y;
+                    if (nextCalc == this.Goal && neighbor.X == Map[0].Count - 1 && neighbor.Y == Map.Count - 1)
                     {
                         return nextLocation;
                     }
