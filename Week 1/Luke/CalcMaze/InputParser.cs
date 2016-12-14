@@ -20,7 +20,7 @@
                 var row = new List<Location>();
                 for (int j = 0; j < lineVals.Length; j++)
                 {
-                    var loc = new Location(j, i - 1);
+                    var loc = new Location(i-1, j);
                     var result = matchEx.Match(lineVals[j]);
                     loc.CalcValue = int.Parse(result.Groups["CalcVal"].Value);
                     loc.CalcType = CalcType.None;

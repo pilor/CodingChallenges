@@ -44,7 +44,7 @@ namespace CalcMaze
 
         private int TranslateLocation(Location neighbor)
         {
-            return neighbor.Col*Map[0].Count + neighbor.Row + 1;
+            return neighbor.Row*Map[0].Count + neighbor.Col + 1;
         }
 
         private double DoCalc(double next, Location neighbor)
@@ -88,9 +88,9 @@ namespace CalcMaze
             return locs;
         }
 
-        private bool isValid(int x, int y)
+        private bool isValid(int row, int col)
         {
-            return (x >= 0) && (y >= 0) && (y < Map.Count) && (x < Map[y].Count) && !((x == 0) && (y == 0));
+            return (row >= 0) && (col >= 0) && (row < Map.Count) && (col < Map[row].Count) && !((row == 0) && (col == 0));
         }
     }
 }
