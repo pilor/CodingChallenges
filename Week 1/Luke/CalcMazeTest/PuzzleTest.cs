@@ -29,7 +29,7 @@
 -1 *3 +3
 +1 +4 +1";
             Puzzle puzzle = InputParser.Parse(input);
-            puzzle.AddNeighbors(0, 0);
+            puzzle.GetValidNeighbors(0, 0);
             puzzle.LocationsToTry.Dequeue().Should().Be(puzzle.Map[1][0]);
             puzzle.LocationsToTry.Dequeue().Should().Be(puzzle.Map[0][1]);
         }
@@ -42,7 +42,7 @@
 -1 *3 +3
 +1 +4 +1";
             Puzzle puzzle = InputParser.Parse(input);
-            puzzle.AddNeighbors(1, 0);
+            puzzle.GetValidNeighbors(1, 0);
             puzzle.LocationsToTry.Dequeue().Should().Be(puzzle.Map[2][0]);
             puzzle.LocationsToTry.Dequeue().Should().Be(puzzle.Map[1][1]);
             puzzle.LocationsToTry.Count.Should().Be(0);
@@ -56,7 +56,7 @@
 -1 *3 +3
 +1 +4 +1";
             Puzzle puzzle = InputParser.Parse(input);
-            puzzle.AddNeighbors(2, 0);
+            puzzle.GetValidNeighbors(2, 0);
             puzzle.LocationsToTry.Dequeue().Should().Be(puzzle.Map[2][1]);
             puzzle.LocationsToTry.Dequeue().Should().Be(puzzle.Map[1][0]);
             puzzle.LocationsToTry.Count.Should().Be(0);
@@ -70,7 +70,7 @@
 -1 *3 +3
 +1 +4 +1";
             Puzzle puzzle = InputParser.Parse(input);
-            puzzle.AddNeighbors(0, 1);
+            puzzle.GetValidNeighbors(0, 1);
             puzzle.LocationsToTry.Dequeue().Should().Be(puzzle.Map[1][1]);
             puzzle.LocationsToTry.Dequeue().Should().Be(puzzle.Map[0][2]);
             puzzle.LocationsToTry.Count.Should().Be(0);
@@ -84,7 +84,7 @@
 -1 *3 +3
 +1 +4 +1";
             Puzzle puzzle = InputParser.Parse(input);
-            puzzle.AddNeighbors(1, 1);
+            puzzle.GetValidNeighbors(1, 1);
             puzzle.LocationsToTry.Dequeue().Should().Be(puzzle.Map[2][1]);
             puzzle.LocationsToTry.Dequeue().Should().Be(puzzle.Map[1][2]);
             puzzle.LocationsToTry.Dequeue().Should().Be(puzzle.Map[0][1]);
@@ -100,7 +100,7 @@
 -1 *3 +3
 +1 +4 +1";
             Puzzle puzzle = InputParser.Parse(input);
-            puzzle.AddNeighbors(2, 1);
+            puzzle.GetValidNeighbors(2, 1);
             puzzle.LocationsToTry.Dequeue().Should().Be(puzzle.Map[2][2]);
             puzzle.LocationsToTry.Dequeue().Should().Be(puzzle.Map[1][1]);
             puzzle.LocationsToTry.Dequeue().Should().Be(puzzle.Map[2][0]);
@@ -115,7 +115,7 @@
 -1 *3 +3
 +1 +4 +1";
             Puzzle puzzle = InputParser.Parse(input);
-            puzzle.AddNeighbors(2, 2);
+            puzzle.GetValidNeighbors(2, 2);
             puzzle.LocationsToTry.Dequeue().Should().Be(puzzle.Map[1][2]);
             puzzle.LocationsToTry.Dequeue().Should().Be(puzzle.Map[2][1]);
             puzzle.LocationsToTry.Count.Should().Be(0);
