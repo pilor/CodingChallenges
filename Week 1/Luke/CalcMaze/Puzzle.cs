@@ -11,14 +11,14 @@ namespace CalcMaze
 
         public double Goal { get; set; }
 
-        public string Solve()
+        public Node Solve()
         {
             // Assuming that we always start at 0,0 and end at bottom right
             var root = new Node
             {
                 CurrentCalc = Map[0][0].CalcValue,
                 Location = Map[0][0],
-                Path = TranslateLocation(Map[0][0]).ToString()
+                Previous = null
             };
             LocationsToTry.Enqueue(root);
             while (LocationsToTry.Peek() != null)
@@ -28,23 +28,18 @@ namespace CalcMaze
                 foreach (var neighbor in neighbors)
                 {
                     var nextCalc = DoCalc(currentNode.CurrentCalc, neighbor);
-                    var nextLocation = currentNode.Path + " " + TranslateLocation(neighbor);
+                    var nextNode = new Node {CurrentCalc = nextCalc, Location = neighbor, Previous = currentNode};
                     if (nextCalc == Goal && neighbor.Row == Map.Count - 1 && neighbor.Col == Map[0].Count - 1)
                     {
-                        return nextLocation;
+                        return nextNode;
                     }
 
-                    LocationsToTry.Enqueue(new Node {CurrentCalc = nextCalc, Location = neighbor, Path = nextLocation});
+                    LocationsToTry.Enqueue(nextNode);
                 }
             }
 
 
             return null;
-        }
-
-        private int TranslateLocation(Location neighbor)
-        {
-            return neighbor.Row*Map[0].Count + neighbor.Col + 1;
         }
 
         private double DoCalc(double next, Location neighbor)

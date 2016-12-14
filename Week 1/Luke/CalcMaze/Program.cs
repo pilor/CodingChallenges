@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Text;
 
 namespace CalcMaze
 {
@@ -20,9 +21,17 @@ namespace CalcMaze
         {
             var allText = File.ReadAllText(inputPath);
             var puzzle = InputParser.Parse(allText);
-            var solution = puzzle.Solve();
-            Console.WriteLine(solution.Split(' ').Length);
-            Console.WriteLine(solution);
+            Node solution = puzzle.Solve();
+            string answer = solution.Location.TranslateLocation(puzzle).ToString();
+            int nodes = 1;
+            while (solution.Previous != null)
+            {
+                solution = solution.Previous;
+                answer = solution.Location.TranslateLocation(puzzle) + " " + answer;
+                nodes++;
+            }
+            Console.WriteLine(nodes);
+            Console.WriteLine(answer);
             Console.WriteLine("press enter to exit");
             Console.ReadLine();
         }
