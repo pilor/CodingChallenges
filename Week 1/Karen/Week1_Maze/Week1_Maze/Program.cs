@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -17,9 +18,9 @@ namespace Week1_Maze
 
             // figure out how many numbers the line has
             // save such number for maze size. 
-            int theMazeSize;
+            int mazeSize;
 
-
+            string[] result = File.ReadAllLines("x:\\foo.txt");
         }
     }
 }
