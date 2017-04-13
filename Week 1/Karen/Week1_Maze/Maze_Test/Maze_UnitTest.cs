@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Text;
 using System.Collections.Generic;
+using System.Reflection;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Week1_Maze;
+using Pointer = Week1_Maze.Pointer;
 
 namespace Maze_Test
 {
@@ -18,7 +20,7 @@ namespace Maze_Test
         [TestMethod]
         public void TextFileWasReadIntoArray()
         {
-            Maze myMaze1 = new Maze(@"C:\Users\ana_k\Documents\Visual Studio 2015\Projects\Week1_Maze\Week1_Maze\Input0.txt");
+            Maze myMaze1 = new Maze(@"C:\Users\ana_k\Documents\CodingChallenges\Week 1\Karen\Week1_Maze\Week1_Maze\Input0.txt");
 
             int expected = 6;
             int actual = myMaze1.GetDesiredEndResultNum();
@@ -40,7 +42,7 @@ namespace Maze_Test
         [TestMethod]
         public void MatrixZeroWasCreated()
         {
-            Maze myMaze1 = new Maze(@"C:\Users\ana_k\Documents\Visual Studio 2015\Projects\Week1_Maze\Week1_Maze\Input0.txt");
+            Maze myMaze1 = new Maze(@"C:\Users\ana_k\Documents\CodingChallenges\Week 1\Karen\Week1_Maze\Week1_Maze\Input0.txt");
 
             int expected = 6;
             int actual = myMaze1.GetDesiredEndResultNum();
@@ -66,7 +68,7 @@ namespace Maze_Test
         [TestMethod]
         public void MatrixOneWasCreated()
         {
-            Maze myMaze1 = new Maze(@"C:\Users\ana_k\Documents\Visual Studio 2015\Projects\Week1_Maze\Week1_Maze\Input1.txt");
+            Maze myMaze1 = new Maze(@"C:\Users\ana_k\Documents\CodingChallenges\Week 1\Karen\Week1_Maze\Week1_Maze\Input1.txt");
 
             int expected = 6;
             int actual = myMaze1.GetDesiredEndResultNum();
@@ -114,7 +116,7 @@ namespace Maze_Test
         [TestMethod]
         public void SolveMazeEmpty()
         {
-            Maze myMaze1 = new Maze(@"C:\Users\ana_k\Documents\Visual Studio 2015\Projects\Week1_Maze\Week1_Maze\InputEmpty.txt");
+            Maze myMaze1 = new Maze(@"C:\Users\ana_k\Documents\CodingChallenges\Week 1\Karen\Week1_Maze\Week1_Maze\InputEmpty.txt");
             myMaze1.SolveMaze();
 
             int expectedAmountOfNumsInPath = 0;
@@ -129,7 +131,7 @@ namespace Maze_Test
         [TestMethod]
         public void SolveMazeThree()
         {
-            Maze myMaze1 = new Maze(@"C:\Users\ana_k\Documents\Visual Studio 2015\Projects\Week1_Maze\Week1_Maze\Input3.txt");
+            Maze myMaze1 = new Maze(@"C:\Users\ana_k\Documents\CodingChallenges\Week 1\Karen\Week1_Maze\Week1_Maze\Input3.txt");
             myMaze1.SolveMaze();
 
             int expectedAmountOfNumsInPath = 1;
@@ -144,7 +146,7 @@ namespace Maze_Test
         [TestMethod]
         public void SolveMazeZero()
         {
-            Maze myMaze1 = new Maze(@"C:\Users\ana_k\Documents\Visual Studio 2015\Projects\Week1_Maze\Week1_Maze\Input0.txt");
+            Maze myMaze1 = new Maze(@"C:\Users\ana_k\Documents\CodingChallenges\Week 1\Karen\Week1_Maze\Week1_Maze\Input0.txt");
             myMaze1.SolveMaze();
 
             int expectedAmountOfNumsInPath = 3;
@@ -154,6 +156,51 @@ namespace Maze_Test
             string expectedPath = "1 3 4";
             string actualPath = myMaze1.GetPath();
             Assert.AreEqual(expectedPath, actualPath);
+        }
+
+        [TestMethod]
+        public void SolveMazeOne()
+        {
+            Maze myMaze1 = new Maze(@"C:\Users\ana_k\Documents\CodingChallenges\Week 1\Karen\Week1_Maze\Week1_Maze\Input1.txt");
+            myMaze1.SolveMaze();
+
+            int expectedAmountOfNumsInPath = 7;
+            int actualAmountOfNumsInPath = myMaze1.GetAmountOfNumsInPath();
+            Assert.AreEqual(expectedAmountOfNumsInPath, actualAmountOfNumsInPath);
+
+            string expectedPath = "1 4 5 2 3 6 9";
+            string actualPath = myMaze1.GetPath();
+            Assert.AreEqual(expectedPath, actualPath);
+        }
+
+        [TestMethod]
+        public void SolveMazeTwo()
+        {
+            Maze myMaze1 = new Maze(@"C:\Users\ana_k\Documents\CodingChallenges\Week 1\Karen\Week1_Maze\Week1_Maze\Input2.txt");
+            myMaze1.SolveMaze();
+
+            int expectedAmountOfNumsInPath = 15;
+            int actualAmountOfNumsInPath = myMaze1.GetAmountOfNumsInPath();
+            Assert.AreEqual(expectedAmountOfNumsInPath, actualAmountOfNumsInPath);
+
+            string expectedPath = "1 2 3 4 9 14 13 12 17 22 23 24 25 20 25";
+            string actualPath = myMaze1.GetPath();
+            Assert.AreEqual(expectedPath, actualPath);
+        }
+
+        [TestMethod]
+        public void populateListOfPointers()
+        {
+            List<Pointer> myList = new List<Pointer>();
+            myList.Add(new Pointer(2,1));
+
+            int expectedY = 2;
+            int actualY = myList[0].getY();
+            Assert.AreEqual(expectedY, actualY);
+
+            int expectedX = 1;
+            int actualX = myList[0].getX();
+            Assert.AreEqual(expectedX, actualX);
         }
     }
 }

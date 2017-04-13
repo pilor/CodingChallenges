@@ -35,10 +35,12 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
+using System.Diagnostics.Eventing.Reader;
 using System.Dynamic;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -55,8 +57,8 @@ namespace Week1_Maze
         private int mazeSize;
 
         // later, save all correct paths, compare sizes and print optimal paths
-        int shortestListSize = 0;
-        List<List<int>> possiblePaths = new List<List<int>>();
+        private int shortestListSize = 0;
+        private List<Pointer[]> possiblePaths = new List<Pointer[]>();
 
         public Maze() { }
 
@@ -130,6 +132,16 @@ namespace Week1_Maze
             return matrix[row, column];
         }
 
+        public List<Pointer[]> GetPossiblePaths()
+        {
+            return possiblePaths;
+        }
+
+        // It creates a matrix with this coordinates
+        // Y,X
+        // 0,0 | 0,1 | 0,2 ...
+        // 1,0 | 1,1 | 1,2 ...
+        // 2,0 | 2,1 | 2,2 ...
         private void CreateMatrix(string[] lines)
         {
             for (int rowNum = 1; rowNum < mazeSize; rowNum++)
@@ -163,87 +175,53 @@ namespace Week1_Maze
                 }
                 else
                 {
-                    List<int> yxPath = new List<int>(); // saves path as y*10 and x*1
-                    ReachTargetNumber(currentY, currentX, current, yxPath);
+                    List<Pointer> yxPath = new List<Pointer>(); // saves path as y*10 and x*1
+
+                    // It tries to find a path right and down
+                    ReachTargetNumber(currentY, currentX +1, current, yxPath);
+                    ReachTargetNumber(currentY + 1, currentX, current, yxPath);
                 }
+
+                TranslatePossiblePaths();
             }
         }
 
 
-        public void ReachTargetNumber(int currentY, int currentX, int current, List<int> yxPath)
+        public void ReachTargetNumber(int currentY, int currentX, int current, List<Pointer> yxPath)
         {
-            // Checks if we have reach the bottom right of the maze
-            if (currentY == mazeSize - 2 && currentX == mazeSize - 2)
+            // Next if statements check if we are at the edge of the maze or inside 
+            if (currentX <= mazeSize - 2 && currentY <= mazeSize - 2 && currentX >= 0 && currentY >= 0 && !(currentY == 0 && currentX == 0))
             {
-                if (current == desiredEndResultNum)
+                yxPath.Add(new Pointer(currentY, currentX));
+                string integerString = matrix[currentY, currentX];
+                char nextOperator = integerString[0];
+                int nextNum = Convert.ToInt32(integerString.Substring(1));
+
+                // Performs the operation and updates the position
+                current = Calculator(current, nextOperator, nextNum);
+
+                // Checks if we have reach the bottom right of the maze & have reach our goal
+                if (currentY == mazeSize - 2 && currentX == mazeSize - 2)
                 {
-                    possiblePaths.Add(yxPath);
-                    return;
+                    if (current == desiredEndResultNum)
+                    {
+                        Pointer[] addableList = new Pointer[yxPath.Count];
+                        addableList = yxPath.ToArray();
+                        possiblePaths.Add(addableList);
+                        yxPath.Clear();
+                    }
+                    else
+                    {
+                        yxPath.Clear();
+                    }
                 }
-                // Next if statements check if we are at the edge of the maze or inside 
                 else
                 {
-                    // gets next right number -->
-                    if (currentX <= mazeSize - 3)
-                    {
-                        currentX++;
-                        string integerString = matrix[currentY, currentX];
-                        char nextOperator = integerString[0];
-                        int nextNum = Convert.ToInt32(integerString.Substring(1));
-
-                        // Performs the operation and updates the position
-                        current = Calculator(current, nextOperator, nextNum);
-
-                        // Calls the function to see if we have reach our goal
-                        ReachTargetNumber(currentY, currentX, current, yxPath);
-                    }
-
-                    // gets next down number
-                    if (currentY <= mazeSize - 3)
-                    {
-                        currentY++;
-                        string integerString = matrix[currentY, currentX];
-                        char nextOperator = integerString[0];
-                        int nextNum = Convert.ToInt32(integerString.Substring(1));
-
-                        // Performs the operation and updates the position
-                        current = Calculator(current, nextOperator, nextNum);
-
-                        // Calls the function to see if we have reach our goal
-                        ReachTargetNumber(currentY, currentX, current, yxPath);
-                    }
-
-                    // gets next left number <--
-                    // Once it has reach the bottom right, it won't keep going back into the maze
-                    if (currentX >= 0 && currentX <= mazeSize - 3 && currentY <= mazeSize - 3)
-                    {
-                        currentX--;
-                        string integerString = matrix[currentY, currentX];
-                        char nextOperator = integerString[0];
-                        int nextNum = Convert.ToInt32(integerString.Substring(1));
-
-                        // Performs the operation and updates the position
-                        current = Calculator(current, nextOperator, nextNum);
-
-                        // Calls the function to see if we have reach our goal
-                        ReachTargetNumber(currentY, currentX, current, yxPath);
-                    }
-
-                    // gets next up number
-                    // Once it has reach the bottom right, it won't keep going back into the maze
-                    if (currentY >= 0 && currentX <= mazeSize - 3 && currentY <= mazeSize - 3)
-                    {
-                        currentY--;
-                        string integerString = matrix[currentY, currentX];
-                        char nextOperator = integerString[0];
-                        int nextNum = Convert.ToInt32(integerString.Substring(1));
-
-                        // Performs the operation and updates the position
-                        current = Calculator(current, nextOperator, nextNum);
-
-                        // Calls the function to see if we have reach our goal
-                        ReachTargetNumber(currentY, currentX, current, yxPath);
-                    }
+                    // it tries to find a path right, down, left, and up.
+                    ReachTargetNumber(currentY, currentX + 1, current, yxPath);
+                    ReachTargetNumber(currentY + 1, currentX, current, yxPath);
+                    ReachTargetNumber(currentY, currentX - 1, current, yxPath);
+                    ReachTargetNumber(currentY - 1, currentX, current, yxPath);
                 }
             }
         }
@@ -269,13 +247,71 @@ namespace Week1_Maze
                 return current + nextRightNum;
             }
         }
+
+        public void TranslatePossiblePaths()
+        {
+            if (possiblePaths != null)
+            {
+                // finds the lenght of the shortest possible path
+                int shortestPathLenght = possiblePaths[0].Length;
+                for (int i = 1; i < possiblePaths.Count; i++)
+                {
+                    if (possiblePaths[i].Length < shortestPathLenght)
+                    {
+                        shortestPathLenght = possiblePaths[i].Length;
+                    }
+                }
+
+                // saves all correct paths of the shortest lenght
+                List<Pointer[]> listOfShortPaths = new List<Pointer[]>();
+                for (int i = 0; i < possiblePaths.Count; i++)
+                {
+                    if (possiblePaths[i].Length == shortestPathLenght)
+                    {
+                        listOfShortPaths.Add(possiblePaths[i]);
+                    }
+                }
+
+                // saves path lenght
+                amountOfNumsInPath = shortestPathLenght;
+
+                // translate path pointers
+                for (int pathNumber = 0; pathNumber < listOfShortPaths.Count; pathNumber++)
+                {
+                    path += "1";
+                    for (int arrayIndex = 1; arrayIndex < listOfShortPaths[pathNumber].Length; arrayIndex++)
+                    {
+                        if (listOfShortPaths[pathNumber][arrayIndex].getY() == 0)
+                        {
+                            path += " " + listOfShortPaths[pathNumber][arrayIndex].getX() + 1;
+                        }
+                        else
+                        {
+                            for (int y = 1; y <= mazeSize - 2; y++)
+                            {
+                                if (listOfShortPaths[pathNumber][arrayIndex].getY() == y)
+                                {
+                                    path += " " + (mazeSize * y - (y - 1)) +
+                                            listOfShortPaths[pathNumber][arrayIndex].getX();
+                                }
+                            }
+                        }
+                    }
+
+                    if (pathNumber != listOfShortPaths.Count - 1)
+                    {
+                        path += "\n";
+                    }
+                }
+            }
+        }
     }
 
     class Program
     {
         static void Main(string[] args)
         {
-            Maze myMaze1 = new Maze(@"C:\Users\ana_k\Documents\Visual Studio 2015\Projects\Week1_Maze\Week1_Maze\Input0.txt");
+            Maze myMaze1 = new Maze(@"C:\Users\ana_k\Documents\CodingChallenges\Week 1\Karen\Week1_Maze\Week1_Maze\Input0.txt");
 
         }
     }
