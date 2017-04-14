@@ -59,6 +59,8 @@ namespace Week1_Maze
         // later, save all correct paths, compare sizes and print optimal paths
         private int shortestListSize = 0;
         private List<Pointer[]> possiblePaths = new List<Pointer[]>();
+        private bool continueRecursion = true;
+        private int timesReachBottomRight = 0;
 
         public Maze() { }
 
@@ -179,6 +181,9 @@ namespace Week1_Maze
 
                     // It tries to find a path right and down
                     ReachTargetNumber(currentY, currentX +1, current, yxPath);
+                    yxPath.Clear();
+                    timesReachBottomRight = 0;
+                    continueRecursion = true;
                     ReachTargetNumber(currentY + 1, currentX, current, yxPath);
                 }
 
@@ -189,42 +194,82 @@ namespace Week1_Maze
 
         public void ReachTargetNumber(int currentY, int currentX, int current, List<Pointer> yxPath)
         {
-            // Next if statements check if we are at the edge of the maze or inside 
-            if (currentX <= mazeSize - 2 && currentY <= mazeSize - 2 && currentX >= 0 && currentY >= 0 && !(currentY == 0 && currentX == 0))
-            {
-                yxPath.Add(new Pointer(currentY, currentX));
-                string integerString = matrix[currentY, currentX];
-                char nextOperator = integerString[0];
-                int nextNum = Convert.ToInt32(integerString.Substring(1));
-
-                // Performs the operation and updates the position
-                current = Calculator(current, nextOperator, nextNum);
-
-                // Checks if we have reach the bottom right of the maze & have reach our goal
-                if (currentY == mazeSize - 2 && currentX == mazeSize - 2)
+                // Next if statements check if we are at the edge of the maze or inside 
+                if (currentX <= mazeSize - 2 && currentY <= mazeSize - 2 && currentX >= 0 && currentY >= 0 &&
+                    !(currentY == 0 && currentX == 0))
                 {
-                    if (current == desiredEndResultNum)
+                    yxPath.Add(new Pointer(currentY, currentX));
+                    if (yxPath.Count > Math.Pow(mazeSize, 3))
                     {
-                        Pointer[] addableList = new Pointer[yxPath.Count];
-                        addableList = yxPath.ToArray();
-                        possiblePaths.Add(addableList);
-                        yxPath.Clear();
+                        continueRecursion = false;
                     }
-                    else
+
+                    string integerString = matrix[currentY, currentX];
+                    char nextOperator = integerString[0];
+                     int nextNum = Convert.ToInt32(integerString.Substring(1));
+
+                    // Performs the operation and updates the position
+                    current = Calculator(current, nextOperator, nextNum);
+
+                    // Checks if we have reach the bottom right of the maze & have reach our goal
+                    if (currentY == mazeSize - 2 && currentX == mazeSize - 2)
                     {
-                        yxPath.Clear();
+                        timesReachBottomRight++;
+                        if (timesReachBottomRight > Math.Pow(mazeSize, 2))
+                        {
+                            continueRecursion = false;
+                        }
+
+                        if (current == desiredEndResultNum)
+                        {
+                            Pointer[] addableList = new Pointer[yxPath.Count];
+                            addableList = yxPath.ToArray();
+                            possiblePaths.Add(addableList);
+                            yxPath.Clear();
+                            continueRecursion = false;
+                        }
+                        else
+                        {
+                            //yxPath.Clear();
+                        }
+                        //return;
                     }
-                }
-                else
-                {
+                    //else
+                    //{
                     // it tries to find a path right, down, left, and up.
-                    ReachTargetNumber(currentY, currentX + 1, current, yxPath);
-                    ReachTargetNumber(currentY + 1, currentX, current, yxPath);
-                    ReachTargetNumber(currentY, currentX - 1, current, yxPath);
-                    ReachTargetNumber(currentY - 1, currentX, current, yxPath);
+                    if (continueRecursion == true)
+                    {
+                        ReachTargetNumber(currentY, currentX + 1, current, yxPath);
+                    yxPath.Clear();
+                    timesReachBottomRight = 0;
+                    continueRecursion = true;
                 }
-            }
+                    if (continueRecursion == true)
+                    {
+                        ReachTargetNumber(currentY + 1, currentX, current, yxPath);
+                    yxPath.Clear();
+                    timesReachBottomRight = 0;
+                    continueRecursion = true;
+                }
+                    if (continueRecursion == true)
+                    {
+                        ReachTargetNumber(currentY, currentX - 1, current, yxPath);
+                    yxPath.Clear();
+                    timesReachBottomRight = 0;
+                    continueRecursion = true;
+                }
+                    if(continueRecursion == true)
+                    { 
+                        ReachTargetNumber(currentY - 1, currentX, current, yxPath);
+                    yxPath.Clear();
+                    timesReachBottomRight = 0;
+                    continueRecursion = true;
+                }
+                }
         }
+        // After I found the first path, then just let the other 3 paralel recursive methods end
+        // and then leave, since if they keep going they would only give me longer paths than what
+        // I already have. 
 
         public int Calculator(int current, char nextRightOperator, int nextRightNum)
         {
@@ -250,7 +295,7 @@ namespace Week1_Maze
 
         public void TranslatePossiblePaths()
         {
-            if (possiblePaths != null)
+            if (possiblePaths.Count != 0)
             {
                 // finds the lenght of the shortest possible path
                 int shortestPathLenght = possiblePaths[0].Length;
@@ -273,13 +318,13 @@ namespace Week1_Maze
                 }
 
                 // saves path lenght
-                amountOfNumsInPath = shortestPathLenght;
+                amountOfNumsInPath = shortestPathLenght + 1;
 
                 // translate path pointers
                 for (int pathNumber = 0; pathNumber < listOfShortPaths.Count; pathNumber++)
                 {
                     path += "1";
-                    for (int arrayIndex = 1; arrayIndex < listOfShortPaths[pathNumber].Length; arrayIndex++)
+                    for (int arrayIndex = 0; arrayIndex < listOfShortPaths[pathNumber].Length; arrayIndex++)
                     {
                         if (listOfShortPaths[pathNumber][arrayIndex].getY() == 0)
                         {
@@ -291,8 +336,8 @@ namespace Week1_Maze
                             {
                                 if (listOfShortPaths[pathNumber][arrayIndex].getY() == y)
                                 {
-                                    path += " " + (mazeSize * y - (y - 1)) +
-                                            listOfShortPaths[pathNumber][arrayIndex].getX();
+                                    path += " " + ((mazeSize * y - (y - 1)) +
+                                            listOfShortPaths[pathNumber][arrayIndex].getX());
                                 }
                             }
                         }
