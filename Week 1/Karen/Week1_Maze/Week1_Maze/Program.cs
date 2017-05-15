@@ -60,7 +60,12 @@ namespace Week1_Maze
         private int shortestListSize = 0;
         private List<Pointer[]> possiblePaths = new List<Pointer[]>();
         private bool continueRecursion = true;
+        private bool wasGoalReached = false;
         private int timesReachBottomRight = 0;
+        private Queue<Pointer> myQueue = new Queue<Pointer>();
+        private Pointer[] arrayOfParentPointers;
+        private List<Pointer> yxPath = new List<Pointer>();
+        private List<Pointer> listOfParentPointers = new List<Pointer>();
 
         public Maze() { }
 
@@ -156,9 +161,6 @@ namespace Week1_Maze
             }
         }
 
-        // save path in list, display shortest list that reaches bottom left and == target #
-        // constantly check if == target and if it is bottom left. 
-
         // I'm assuming that the target number is never equal to the top left
         // number of the maze when the maze is 2x2 or bigger.
         public void SolveMaze()
@@ -177,95 +179,164 @@ namespace Week1_Maze
                 }
                 else
                 {
-                    List<Pointer> yxPath = new List<Pointer>(); // saves path as y*10 and x*1
+                    Pointer currentPointer = new Pointer(currentY, currentX, current);
+                    AddToQueue(currentPointer);
 
                     // It tries to find a path right and down
-                    ReachTargetNumber(currentY, currentX +1, current, yxPath);
-                    yxPath.Clear();
-                    timesReachBottomRight = 0;
-                    continueRecursion = true;
-                    ReachTargetNumber(currentY + 1, currentX, current, yxPath);
+                    //ReachTargetNumber(currentY, currentX +1, current, yxPath);
+
+                    //Pointer[] addableList = new Pointer[yxPath.Count];
+                    //if (yxPath.Count > 0)
+                    //{
+                    //    addableList = yxPath.ToArray();
+                    //    possiblePaths.Add(addableList);
+                   //     yxPath.Clear();
+                    //}
+                    //timesReachBottomRight = 0;
+                    //continueRecursion = true;
+
+                    //ReachTargetNumber(currentY + 1, currentX, current, yxPath);
+                    //if (yxPath.Count > 0)
+                    //{
+                    //    addableList = yxPath.ToArray();
+                    //    possiblePaths.Add(addableList);
+                    //    yxPath.Clear();
+                    //}
                 }
 
-                TranslatePossiblePaths();
+                TranslatePath();
             }
         }
 
+        public void AddToQueue(Pointer parentPointer)
+        {
+            Pointer currentPointerRight = new Pointer(parentPointer.Y, parentPointer.getX() + 1, parentPointer.getCurrent());
+            currentPointerRight.setParentPointer(parentPointer);
+            myQueue.Enqueue(currentPointerRight);
+
+            Pointer currentPointerLeft = new Pointer(parentPointer.Y, parentPointer.getX() - 1, parentPointer.getCurrent());
+            currentPointerLeft.setParentPointer(parentPointer);
+            myQueue.Enqueue(currentPointerLeft);
+
+            Pointer currentPointerDown = new Pointer(parentPointer.Y + 1, parentPointer.getX(), parentPointer.getCurrent());
+            currentPointerDown.setParentPointer(parentPointer);
+            myQueue.Enqueue(currentPointerDown);
+
+            Pointer currentPointerUp = new Pointer(parentPointer.Y - 1, parentPointer.getX(), parentPointer.getCurrent());
+            currentPointerUp.setParentPointer(parentPointer);
+            myQueue.Enqueue(currentPointerUp);
+
+            while (wasGoalReached == false && myQueue.Count > 0)
+            {
+                WorkQueue();
+            }
+        }
+
+        public void WorkQueue()
+        {
+            Pointer currentPointer = new Pointer(myQueue.Dequeue());
+            if (currentPointer.getX() <= mazeSize - 2 && currentPointer.Y <= mazeSize - 2 &&
+                 currentPointer.getX() >= 0 && currentPointer.Y >= 0 &&
+                !(currentPointer.Y == 0 && currentPointer.getX() == 0))
+            {
+                string integerString = matrix[currentPointer.Y, currentPointer.getX()];
+                char nextOperator = integerString[0];
+                int nextNum = Convert.ToInt32(integerString.Substring(1));
+
+                // Performs the operation and updates the position
+                currentPointer.setCurrent(Calculator(currentPointer.getCurrent(), nextOperator, nextNum));
+
+                // Checks if we have reach the bottom right of the maze & have reach our goal
+                if (currentPointer.Y == mazeSize - 2 && currentPointer.getX() == mazeSize - 2)
+                    //&& currentPointer.getCurrent() == desiredEndResultNum)
+                {
+                    if (currentPointer.getCurrent() == desiredEndResultNum)
+                    {
+                        wasGoalReached = true;
+                        SavePath(currentPointer);
+                    }
+                }
+                if (wasGoalReached == false)
+                {
+                    AddToQueue(currentPointer);
+                }
+            }
+        }
+
+        public void SavePath(Pointer currentPointer)
+        {
+            yxPath.Add(currentPointer);
+            while (currentPointer.GetParentPointer() != null)
+            {
+                yxPath.Add((currentPointer.GetParentPointer()));
+                currentPointer = currentPointer.GetParentPointer();
+            }
+        }
 
         public void ReachTargetNumber(int currentY, int currentX, int current, List<Pointer> yxPath)
         {
-                // Next if statements check if we are at the edge of the maze or inside 
-                if (currentX <= mazeSize - 2 && currentY <= mazeSize - 2 && currentX >= 0 && currentY >= 0 &&
-                    !(currentY == 0 && currentX == 0))
+            // Next if statements check if we are at the edge of the maze or inside 
+            if (currentX <= mazeSize - 2 && currentY <= mazeSize - 2 && currentX >= 0 && currentY >= 0 &&
+                !(currentY == 0 && currentX == 0))
+            {
+                string integerString = matrix[currentY, currentX];
+                char nextOperator = integerString[0];
+                int nextNum = Convert.ToInt32(integerString.Substring(1));
+
+                // Performs the operation and updates the position
+                int potentialCurrent = Calculator(current, nextOperator, nextNum);
+
+                // Checks if we have reach the bottom right of the maze & have reach our goal
+                if (currentY == mazeSize - 2 && currentX == mazeSize - 2)
                 {
-                    yxPath.Add(new Pointer(currentY, currentX));
-                    if (yxPath.Count > Math.Pow(mazeSize, 3))
+                    timesReachBottomRight++;
+                    if (timesReachBottomRight > mazeSize) //Math.Pow(mazeSize, 5))
                     {
                         continueRecursion = false;
                     }
-
-                    string integerString = matrix[currentY, currentX];
-                    char nextOperator = integerString[0];
-                     int nextNum = Convert.ToInt32(integerString.Substring(1));
-
-                    // Performs the operation and updates the position
-                    current = Calculator(current, nextOperator, nextNum);
-
-                    // Checks if we have reach the bottom right of the maze & have reach our goal
-                    if (currentY == mazeSize - 2 && currentX == mazeSize - 2)
+                    if (potentialCurrent == desiredEndResultNum)
                     {
-                        timesReachBottomRight++;
-                        if (timesReachBottomRight > Math.Pow(mazeSize, 2))
-                        {
-                            continueRecursion = false;
-                        }
-
-                        if (current == desiredEndResultNum)
-                        {
-                            Pointer[] addableList = new Pointer[yxPath.Count];
-                            addableList = yxPath.ToArray();
-                            possiblePaths.Add(addableList);
-                            yxPath.Clear();
-                            continueRecursion = false;
-                        }
-                        else
-                        {
-                            //yxPath.Clear();
-                        }
-                        //return;
+                        wasGoalReached = true;
+                        continueRecursion = false;
                     }
-                    //else
-                    //{
-                    // it tries to find a path right, down, left, and up.
-                    if (continueRecursion == true)
-                    {
-                        ReachTargetNumber(currentY, currentX + 1, current, yxPath);
-                    yxPath.Clear();
-                    timesReachBottomRight = 0;
+                }
+
+                // it tries to find a path right, down, left, and up.
+                if (continueRecursion == true)
+                {
+                    ReachTargetNumber(currentY, currentX + 1, potentialCurrent, yxPath);
+                }
+                if (continueRecursion == true)
+                {
+                    ReachTargetNumber(currentY + 1, currentX, potentialCurrent, yxPath);
+                }
+                if (continueRecursion == true)
+                {
+                    ReachTargetNumber(currentY, currentX - 1, potentialCurrent, yxPath);
+                }
+                if (continueRecursion == true)
+                {
+                    ReachTargetNumber(currentY - 1, currentX, potentialCurrent, yxPath);
+                }
+                if (wasGoalReached == true)
+                {
+                    yxPath.Add(new Pointer(currentY, currentX));
+                }
+                if (currentY == mazeSize - 2 && currentX == mazeSize - 2)
+                {
+                    timesReachBottomRight--;
+                }
+
+                // zero intead of one, because in this same loop I just added to the variable
+                if (timesReachBottomRight < 1)
+                {
                     continueRecursion = true;
                 }
-                    if (continueRecursion == true)
-                    {
-                        ReachTargetNumber(currentY + 1, currentX, current, yxPath);
-                    yxPath.Clear();
-                    timesReachBottomRight = 0;
-                    continueRecursion = true;
+                else
+                {
+                    potentialCurrent = current;
                 }
-                    if (continueRecursion == true)
-                    {
-                        ReachTargetNumber(currentY, currentX - 1, current, yxPath);
-                    yxPath.Clear();
-                    timesReachBottomRight = 0;
-                    continueRecursion = true;
-                }
-                    if(continueRecursion == true)
-                    { 
-                        ReachTargetNumber(currentY - 1, currentX, current, yxPath);
-                    yxPath.Clear();
-                    timesReachBottomRight = 0;
-                    continueRecursion = true;
-                }
-                }
+            }
         }
         // After I found the first path, then just let the other 3 paralel recursive methods end
         // and then leave, since if they keep going they would only give me longer paths than what
@@ -290,6 +361,32 @@ namespace Week1_Maze
                 Console.WriteLine("Operators can only be +, -, and *. Your maze contains the simbol "
                     + nextRightOperator + " which will be taken as an addition.");
                 return current + nextRightNum;
+            }
+        }
+
+        public void TranslatePath()
+        {
+            yxPath.Reverse();
+            path += yxPath.Count + "\n";
+            path += "1";
+            for (int arrayIndex = 1; arrayIndex < yxPath.Count; arrayIndex++)
+            {
+                if (yxPath[arrayIndex].Y == 0)
+                {
+                    path += " " + (yxPath[arrayIndex].getX() + 1);
+                }
+                else
+                {
+                    for (int y = 1; y <= mazeSize - 2; y++)
+                    {
+                        if (yxPath[arrayIndex].Y == y)
+                        {
+                            path += " " + (mazeSize * y - (y - 1) +
+                                           yxPath[arrayIndex].getX());
+                            y = mazeSize; //to break loop once the right value of y has been found
+                        }
+                    }
+                }
             }
         }
 
@@ -324,9 +421,10 @@ namespace Week1_Maze
                 for (int pathNumber = 0; pathNumber < listOfShortPaths.Count; pathNumber++)
                 {
                     path += "1";
-                    for (int arrayIndex = 0; arrayIndex < listOfShortPaths[pathNumber].Length; arrayIndex++)
+                    //for (int arrayIndex = 0; arrayIndex < listOfShortPaths[pathNumber].Length; arrayIndex++)
+                    for(int arrayIndex = listOfShortPaths[pathNumber].Length -1; arrayIndex >= 0; arrayIndex--)
                     {
-                        if (listOfShortPaths[pathNumber][arrayIndex].getY() == 0)
+                        if (listOfShortPaths[pathNumber][arrayIndex].Y == 0)
                         {
                             path += " " + listOfShortPaths[pathNumber][arrayIndex].getX() + 1;
                         }
@@ -334,7 +432,7 @@ namespace Week1_Maze
                         {
                             for (int y = 1; y <= mazeSize - 2; y++)
                             {
-                                if (listOfShortPaths[pathNumber][arrayIndex].getY() == y)
+                                if (listOfShortPaths[pathNumber][arrayIndex].Y == y)
                                 {
                                     path += " " + ((mazeSize * y - (y - 1)) +
                                             listOfShortPaths[pathNumber][arrayIndex].getX());

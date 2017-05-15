@@ -51,6 +51,8 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Input5.txt" />
+    <Content Include="Input4.txt" />
     <Content Include="Input0.txt" />
     <Content Include="Input1.txt" />
     <Content Include="Input2.txt" />
